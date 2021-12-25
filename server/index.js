@@ -10,10 +10,9 @@ app.use(
 );
 
 app.get('/getDcardPosts', (request, response) => {
-  const url =
-    request.query.isFirstPage === 'true'
-      ? `https://www.dcard.tw/v2/posts?popular=true`
-      : `https://www.dcard.tw/v2/posts?popular=true&before=${request.query.lastPost}`;
+  const url = request.query.lastPost
+    ? `https://www.dcard.tw/v2/posts?popular=true&before=${request.query.lastPost}`
+    : `https://www.dcard.tw/v2/posts?popular=true`;
   axios(encodeURI(url))
     .then((res) => JSON.parse(JSON.stringify(res.data)))
     .then((json) => response.json(json));

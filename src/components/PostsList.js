@@ -8,10 +8,16 @@ const PostsContainer = styled.div`
   padding: 30px 80px;
 `;
 
+const LoadingText = styled.div`
+  font-size: 20px;
+  text-align: center;
+  padding: 40px;
+  font-weight: bold;
+`;
+
 export default function PostsList() {
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
-  const [isFirstPage, setIsFirstPage] = useState(true);
   const [lastPost, setLastPost] = useState('');
 
   const observer = useRef();
@@ -33,14 +39,13 @@ export default function PostsList() {
   async function fetchDcardPosts() {
     setLoading(true);
     const res = await fetch(
-      `http://localhost:3000/getDcardPosts?isFirstPage=${isFirstPage}&lastPost=${lastPost}`
+      `http://localhost:3000/getDcardPosts?lastPost=${lastPost}`
     );
     const json = await res.json();
     setPosts((prevPosts) => {
       return [...prevPosts, ...json];
     });
     setLastPost(json[json.length - 1].id);
-    setIsFirstPage(false);
     setLoading(false);
   }
 
@@ -48,6 +53,7 @@ export default function PostsList() {
     fetchDcardPosts();
   }, []);
 
+  console.log(posts);
   return (
     <PostsContainer>
       {posts.map((post, index) => {
@@ -59,6 +65,7 @@ export default function PostsList() {
           return <Post post={post} key={post.id} />;
         }
       })}
+      {loading ? <LoadingText>Loading...</LoadingText> : null}
     </PostsContainer>
   );
 }
