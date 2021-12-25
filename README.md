@@ -13,7 +13,7 @@
 - #### Infinite Scroll
 
   - Used ref attribute to get access to the last element of the posts list.
-  - Detected the appearance of the last element through Intersection Observer API and triggered further posts data fetching
+  - Detected the appearance of the last element through Intersection Observer API and triggered further posts data fetching.
 
 - #### Component Design
   - Created a posts list container to nest all the posts.
