@@ -41,7 +41,6 @@ export default function PostsList() {
         }
       });
       if (node) observer.current.observe(node);
-      console.log(node);
     },
     [loading, hasMore]
   );
@@ -55,7 +54,12 @@ export default function PostsList() {
     const json = await res.json();
     if (json.length) {
       setPosts((prevPosts) => {
-        return [...prevPosts, ...json];
+        return [
+          ...prevPosts,
+          ...json.map((p) => {
+            return { title: p.title, excerpt: p.excerpt, id: p.id };
+          }),
+        ];
       });
       setLastPostId(json[json.length - 1].id);
     } else {
@@ -69,18 +73,15 @@ export default function PostsList() {
     fetchDcardPosts();
   }, []);
 
-  console.log(posts);
   return (
     <PostsContainer>
       <AuthorText>Created by William, Juo-Wei Lin</AuthorText>
       {posts.map((post, index) => {
-        if (posts.length === index + 1) {
-          return (
-            <Post forwardedRef={lastPostElementRef} post={post} key={post.id} />
-          );
-        } else {
-          return <Post post={post} key={post.id} />;
-        }
+        return posts.length === index + 1 ? (
+          <Post forwardedRef={lastPostElementRef} post={post} key={post.id} />
+        ) : (
+          <Post post={post} key={post.id} />
+        );
       })}
       {loading ? <LoadingText>Loading...</LoadingText> : null}
     </PostsContainer>
