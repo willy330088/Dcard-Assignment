@@ -6,6 +6,7 @@ const PostsContainer = styled.div`
   min-height: 100vh;
   background-color: white;
   padding: 30px 80px;
+  position: relative;
 `;
 
 const LoadingText = styled.div`
@@ -15,10 +16,19 @@ const LoadingText = styled.div`
   font-weight: bold;
 `;
 
+const AuthorText = styled.div`
+  font-size: 17px;
+  font-weight: bold;
+  position: absolute;
+  top: 20px;
+  right: 10px;
+`;
+
 export default function PostsList() {
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
-  const [lastPost, setLastPost] = useState('');
+  const [lastPostId, setLastPostId] = useState('');
+  const [hasMore, setHasMore] = useState(true);
 
   const observer = useRef();
   const lastPostElementRef = useCallback(
@@ -26,26 +36,32 @@ export default function PostsList() {
       if (loading) return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
+        if (entries[0].isIntersecting && hasMore) {
           fetchDcardPosts();
         }
       });
       if (node) observer.current.observe(node);
       console.log(node);
     },
-    [loading]
+    [loading, hasMore]
   );
 
   async function fetchDcardPosts() {
     setLoading(true);
+
     const res = await fetch(
-      `http://localhost:3000/getDcardPosts?lastPost=${lastPost}`
+      `http://localhost:3000/getDcardPosts?lastPostId=${lastPostId}`
     );
     const json = await res.json();
-    setPosts((prevPosts) => {
-      return [...prevPosts, ...json];
-    });
-    setLastPost(json[json.length - 1].id);
+    if (json.length) {
+      setPosts((prevPosts) => {
+        return [...prevPosts, ...json];
+      });
+      setLastPostId(json[json.length - 1].id);
+    } else {
+      setHasMore(false);
+    }
+
     setLoading(false);
   }
 
@@ -56,6 +72,7 @@ export default function PostsList() {
   console.log(posts);
   return (
     <PostsContainer>
+      <AuthorText>Created by William, Juo-Wei Lin</AuthorText>
       {posts.map((post, index) => {
         if (posts.length === index + 1) {
           return (
