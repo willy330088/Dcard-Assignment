@@ -4,24 +4,24 @@ import Post from './Post';
 
 const PostsContainer = styled.div`
   min-height: 100vh;
-  background-color: white;
   padding: 30px 80px;
   position: relative;
+  background-color: white;
 `;
 
 const LoadingText = styled.div`
-  font-size: 20px;
   text-align: center;
   padding: 40px;
+  font-size: 20px;
   font-weight: bold;
 `;
 
 const AuthorText = styled.div`
-  font-size: 17px;
-  font-weight: bold;
   position: absolute;
   top: 20px;
   right: 10px;
+  font-size: 17px;
+  font-weight: bold;
 `;
 
 export default function PostsList() {

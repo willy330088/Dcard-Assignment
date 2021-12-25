@@ -3,14 +3,14 @@ import styled from 'styled-components';
 
 const PostContainer = styled.div`
   padding: 40px;
-  cursor: pointer;
   border-bottom: 1px solid #e3e3e3;
+  cursor: pointer;
 `;
 
 const PostTitle = styled.div`
+  padding-bottom: 20px;
   font-size: 22px;
   font-weight: bold;
-  padding-bottom: 20px;
 `;
 
 const PostExcerpt = styled.div`
