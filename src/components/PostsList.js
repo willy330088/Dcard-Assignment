@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import Post from './Post';
 
@@ -9,38 +9,55 @@ const PostsContainer = styled.div`
 `;
 
 export default function PostsList() {
+  const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
   const [isFirstPage, setIsFirstPage] = useState(true);
   const [lastPost, setLastPost] = useState('');
 
+  const observer = useRef();
+  const lastPostElementRef = useCallback(
+    (node) => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          fetchDcardPosts();
+        }
+      });
+      if (node) observer.current.observe(node);
+      console.log(node);
+    },
+    [loading]
+  );
+
   async function fetchDcardPosts() {
+    setLoading(true);
     const res = await fetch(
       `http://localhost:3000/getDcardPosts?isFirstPage=${isFirstPage}&lastPost=${lastPost}`
     );
     const json = await res.json();
-    setPosts(
-      json.map((p) => {
-        return { title: p.title, excerpt: p.excerpt, id: p.id };
-      })
-    );
-    setLastPost(json[json.length - 2].id);
-    console.log(json);
+    setPosts((prevPosts) => {
+      return [...prevPosts, ...json];
+    });
+    setLastPost(json[json.length - 1].id);
+    setIsFirstPage(false);
+    setLoading(false);
   }
 
   useEffect(() => {
     fetchDcardPosts();
-    setIsFirstPage(false);
   }, []);
-
-  console.log(posts);
-  console.log(isFirstPage);
-  console.log(lastPost);
 
   return (
     <PostsContainer>
-      <button onClick={fetchDcardPosts}>hi</button>
-      {posts.map((post) => {
-        return <Post post={post} key={post.id} />;
+      {posts.map((post, index) => {
+        if (posts.length === index + 1) {
+          return (
+            <Post forwardedRef={lastPostElementRef} post={post} key={post.id} />
+          );
+        } else {
+          return <Post post={post} key={post.id} />;
+        }
       })}
     </PostsContainer>
   );

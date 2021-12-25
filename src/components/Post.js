@@ -21,9 +21,9 @@ const PostExcerpt = styled.div`
   white-space: nowrap;
 `;
 
-export default function Post({ post }) {
+export default function Post({ post, forwardedRef }) {
   return (
-    <PostContainer>
+    <PostContainer ref={forwardedRef}>
       <PostTitle>{post.title}</PostTitle>
       <PostExcerpt>{post.excerpt ? post.excerpt : '本文無摘要'}</PostExcerpt>
     </PostContainer>
