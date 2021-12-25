@@ -3,7 +3,7 @@
 ### How to start
 
 1. Run _server/index.js_ on localhost: 3000 to initialize a proxy server for further applications.
-2. Run the app in development mode with _npm start_ on a port other than 3000 (e.g. 3001)
+2. Run the app in development mode with _npm start_ on a port other than 3000 (e.g. 3001).
 
 ### Design Structure
 
@@ -17,4 +17,4 @@
 
 - #### Component Design
   - Created a posts list container to nest all the posts.
-  - Created a individual post component to share all the UI and logics for every post.
+  - Created an individual post component to share all the UI and logics for every post.
